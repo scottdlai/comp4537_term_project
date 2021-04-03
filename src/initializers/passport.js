@@ -3,8 +3,6 @@ const jwt = require('jwt-simple');
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
-const User = require('../models').User;
-
 const { JWT_TOKEN } = require('../config');
 
 /*
