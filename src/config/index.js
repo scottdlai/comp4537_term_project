@@ -11,6 +11,12 @@ const REQUIRED_KEYS = [
   'PORT',
 ];
 
+REQUIRED_KEYS.forEach((key) => {
+  if (!(key in process.env)) {
+    throw new Error(`Key ${key} is missing in .env`);
+  }
+});
+
 const {
   DB_USERNAME,
   DB_PASSWORD,

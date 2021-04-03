@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 
 app.use('/api/v0/quizzes', quizzesRouter);
 app.use('/api/v0/questions', questionsRouter);
-app.use('/api/v0/submission', submissionRouter);
+app.use('/api/v0/submissions', submissionRouter);
 app.use('/api/v0/admin', adminRouter);
 
 module.exports = app;
