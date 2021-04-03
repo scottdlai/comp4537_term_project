@@ -41,5 +41,5 @@ module.exports = {
   JWT_TOKEN,
   TOKEN_EXPIRATION_TIME: Number(TOKEN_EXPIRATION_TIME),
   db: knex,
-  port: PORT,
+  port: PORT || 8000,
 };
