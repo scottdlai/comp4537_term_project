@@ -11,10 +11,6 @@ const REQUIRED_KEYS = [
   'PORT',
 ];
 
-if (!REQUIRED_KEYS.every((key) => key in process.env)) {
-  throw new Error(`Missing required config key: ${key}`);
-}
-
 const {
   DB_USERNAME,
   DB_PASSWORD,
