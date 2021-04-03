@@ -14,4 +14,10 @@ const createQuiz = async (req, res) => {
   res.json('Creates a quiz');
 };
 
-module.exports = { getRecentQuizzes, getQuizByID, createQuiz };
+const deleteQuizByID = async (req, res) => {
+  const { quizID } = req.params;
+
+  res.json(`Deleted quiz of ${quizID}`);
+};
+
+module.exports = { getRecentQuizzes, getQuizByID, createQuiz, deleteQuizByID };

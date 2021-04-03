@@ -4,10 +4,16 @@ const createQuestionFor = async (req, res) => {
   res.json(`Created question for ${quizID}`);
 };
 
-const updateQuestionById = async (req, res) => {
+const updateQuestionByID = async (req, res) => {
   const { questionID } = req.params;
 
   res.json(`Updated question ${questionID}`);
 };
 
-module.exports = { createQuestionFor, updateQuestionById };
+const deleteQuestionByID = async (req, res) => {
+  const { questionID } = req.params;
+
+  res.json(`Deleted question ${questionID}`);
+};
+
+module.exports = { createQuestionFor, updateQuestionByID, deleteQuestionByID };
