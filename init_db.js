@@ -45,11 +45,35 @@ const createSubmissions = async () => {
   console.log('Successfully created `submissions` table');
 };
 
+const createAdmin = async () => {
+  await db.schema.createTable('admin', (table) => {
+    table.string('apiName').primary();
+    table.integer('count').defaultTo(0);
+  });
+
+  console.log('Successfully created `admin` table');
+
+  await db('admin').insert([
+    { apiName: 'GET /api/v0/quizzes' },
+    { apiName: 'GET /api/v0/quizzes/:quizID' },
+    { apiName: 'GET /api/v0/submissions/:quizID' },
+    { apiName: 'POST /api/v0/quizzes' },
+    { apiName: 'POST /api/v0/questions/:quizID' },
+    { apiName: 'POST /api/v0/submissions/:quizID' },
+    { apiName: 'PUT /api/v0/quizzes/:quizID' },
+    { apiName: 'PUT /api/v0/question/:questionID' },
+    { apiName: 'DELETE /api/v0/quizzes/:quizID' },
+    { apiName: 'DELETE /api/v0/questions/:questionID' },
+  ]);
+  console.log('Successfully init `admin` table with values');
+};
+
 const main = async () => {
   await createQuizzes();
   await createQuestions();
   await createOptions();
   await createSubmissions();
+  await createAdmin();
 };
 
 main();
