@@ -21,8 +21,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.set('view engine', 'ejs');
-
 app.use('/api/v0/quizzes', quizzesRouter);
 app.use('/api/v0/questions', questionsRouter);
 app.use('/api/v0/submissions', submissionRouter);
