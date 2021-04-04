@@ -2,7 +2,7 @@ const { db } = require('../../config');
 
 const getAPICounts = async (req, res) => {
   try {
-    const apiCounts = await db('admin').select();
+    const apiCounts = await db('admin').select().orderBy('apiName');
 
     res.status(200);
     res.json({ apiCounts });
