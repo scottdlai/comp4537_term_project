@@ -2,13 +2,12 @@ const { db } = require('../../config');
 
 const columns = [
   'quizzes.id as quizID',
-  'quizzes.quiz_name',
-  'quizzes.created_at',
-  'questions.id as question_id',
-  'questions.body as question_body',
-  'choices.id as choice_id',
-  'choices.body as choice_body',
-  'choices.is_correct',
+  'quizzes.quizName',
+  'quizzes.createdAt',
+  'questions.id as questionID',
+  'questions.body as questionBody',
+  'choices.id as choiceID',
+  'choices.body as choiceBody',
 ];
 
 const getRecentQuizzes = async (req, res) => {
@@ -26,11 +25,36 @@ const getQuizByID = async (req, res) => {
     .select(...columns)
     .join('questions', 'quizzes.id', '=', 'questions.quizID')
     .join('choices', 'questions.id', '=', 'choices.questionID')
-    .where({ 'quizzes.id': quizID });
+    .where({ quizID });
 
-  console.log(rows);
+  if (rows.length === 0) {
+    res.status(401);
+    return res.json({ error: "Quiz doesn't exist" });
+  }
 
-  res.json(`Get quizzes of ${quizID}`);
+  const [{ quizName }] = rows;
+
+  const questions = Object.values(
+    rows.reduce((acc, { questionID, questionBody, choiceID, choiceBody }) => {
+      const question = { questionID, questionBody };
+      const choice = { choiceID, choiceBody };
+
+      return questionID in acc
+        ? {
+            ...acc,
+            [questionID]: {
+              ...question,
+              choices: [...acc[questionID].choices, choice],
+            },
+          }
+        : { ...acc, [questionID]: { ...question, choices: [choice] } };
+    }, {})
+  );
+
+  console.log(questions);
+
+  res.status(200);
+  res.json({ quizID, quizName, questions });
 };
 
 const createQuiz = async (req, res) => {
@@ -88,7 +112,26 @@ const createQuiz = async (req, res) => {
 const deleteQuizByID = async (req, res) => {
   const { quizID } = req.params;
 
-  res.json(`Deleted quiz of ${quizID}`);
+  try {
+    await db('submissions').delete().where({ quizID });
+
+    const rows = await db('questions')
+      .select('id as questionID')
+      .where({ quizID });
+
+    const ids = rows.map(({ questionID }) => questionID);
+
+    await db('choices').delete().whereIn('questionID', ids);
+
+    await db('questions').delete().where({ quizID });
+
+    await db('quizzes').delete().where({ id: quizID });
+
+    return res.status(200);
+  } catch (err) {
+    res.status(501);
+    res.json(err);
+  }
 };
 
 module.exports = { getRecentQuizzes, getQuizByID, createQuiz, deleteQuizByID };
