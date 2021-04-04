@@ -1,0 +1,259 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "0.1",
+    "title" : "Quiz API",
+    "description" : "Team V8 Quiz API"
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/tonyminseokkim11/TeamV8QuizApi/0.1",
+  "schemes" : [ "https" ],
+  "tags" : [ {
+    "name" : "api quiz",
+    "description" : "our own api quiz"
+  }, {
+    "name" : "api submission",
+    "description" : "our own api submission"
+  }, {
+    "name" : "api question",
+    "description" : "our own api question"
+  } ],
+  "paths" : {
+    "/api/v0/quizzes" : {
+      "get" : {
+        "tags" : [ "api quiz" ],
+        "summary" : "Gets a list of recent quizzes",
+        "description" : "",
+        "operationId" : "",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Quiz not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        },
+        "security" : [ ]
+      },
+      "post" : {
+        "tags" : [ "api quiz" ],
+        "summary" : "Creates a new quiz",
+        "description" : "",
+        "operationId" : "",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Quiz not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        },
+        "security" : [ ]
+      }
+    },
+    "/api/v0/quizzes/{quizID}" : {
+      "put" : {
+        "tags" : [ "api quiz" ],
+        "summary" : "Updates a quiz name",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "quizID",
+          "in" : "path",
+          "description" : "ID of quiz to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          }
+        },
+        "security" : [ ]
+      },
+      "get" : {
+        "tags" : [ "api quiz" ],
+        "summary" : "Gets the quiz and its questions with quizID",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "quizID",
+          "in" : "path",
+          "description" : "ID of quiz to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          }
+        },
+        "security" : [ ]
+      },
+      "delete" : {
+        "tags" : [ "api quiz" ],
+        "summary" : "Deletes a quiz with the specified ID",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "quizID",
+          "in" : "path",
+          "description" : "ID of quiz to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      }
+    },
+    "/api/v0/submissions/{quizID}" : {
+      "get" : {
+        "tags" : [ "api submission" ],
+        "summary" : "Gets all the submissions for the quiz with quizID",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "quizID",
+          "in" : "path",
+          "description" : "ID of quiz to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Quiz not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        },
+        "security" : [ ]
+      },
+      "post" : {
+        "tags" : [ "api submission" ],
+        "summary" : "Uploads a submission for the quiz",
+        "description" : "",
+        "operationId" : "",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "quizID",
+          "in" : "path",
+          "description" : "ID of quiz to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Quiz not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        },
+        "security" : [ ]
+      }
+    },
+    "/api/v0/questions/{questionID}" : {
+      "post" : {
+        "tags" : [ "api question" ],
+        "summary" : "Creates a question for the quiz",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "questionID",
+          "in" : "path",
+          "description" : "ID of question to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "api question" ],
+        "summary" : "Updates a question",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "questionID",
+          "in" : "path",
+          "description" : "ID of question to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid user supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "api question" ],
+        "summary" : "Deletes a question with the specified ID",
+        "description" : "",
+        "operationId" : "",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "questionID",
+          "in" : "path",
+          "description" : "ID of question to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      }
+    }
+  }
+}
