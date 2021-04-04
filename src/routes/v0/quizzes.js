@@ -6,6 +6,7 @@ const {
   getQuizByID,
   createQuiz,
   deleteQuizByID,
+  updateQuizName,
 } = require('../../controllers/v0/quizzes');
 const incrementAPI = require('../../middlewares/incrementAPI');
 
@@ -19,7 +20,11 @@ router.get(
 
 router.post('/', incrementAPI('POST /api/v0/quizzes/'), createQuiz);
 
-router.put('/:quizID', incrementAPI('PUT /api/v0/quizzes/:quizID'));
+router.put(
+  '/:quizID',
+  incrementAPI('PUT /api/v0/quizzes/:quizID'),
+  updateQuizName
+);
 
 router.delete(
   '/:quizID',

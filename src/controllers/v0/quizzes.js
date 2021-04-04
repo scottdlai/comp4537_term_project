@@ -109,6 +109,21 @@ const createQuiz = async (req, res) => {
   }
 };
 
+const updateQuizName = async (req, res) => {
+  const { quizID } = req.params;
+  const { quizName } = req.body;
+
+  try {
+    await db('quizzes').update({ quizName }).where({ id: quizID });
+
+    res.status(200);
+    res.json({});
+  } catch (err) {
+    res.status(501);
+    res.json({ error: err });
+  }
+};
+
 const deleteQuizByID = async (req, res) => {
   const { quizID } = req.params;
 
@@ -134,4 +149,10 @@ const deleteQuizByID = async (req, res) => {
   }
 };
 
-module.exports = { getRecentQuizzes, getQuizByID, createQuiz, deleteQuizByID };
+module.exports = {
+  getRecentQuizzes,
+  getQuizByID,
+  createQuiz,
+  updateQuizName,
+  deleteQuizByID,
+};
