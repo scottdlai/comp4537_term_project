@@ -28,7 +28,7 @@ const getQuizByID = async (req, res) => {
     .where({ quizID });
 
   if (rows.length === 0) {
-    res.status(401);
+    res.status(400);
     return res.json({ error: "Quiz doesn't exist" });
   }
 
@@ -63,12 +63,12 @@ const createQuiz = async (req, res) => {
   console.log(req.body);
 
   if (!quizName) {
-    res.status(401);
+    res.status(400);
     return res.json({ error: 'Quiz name must be a non empty string' });
   }
 
   if (!questions.every(({ body }) => body)) {
-    res.status(401);
+    res.status(400);
     return res.json({ error: 'Body of question must be a non empty string' });
   }
 
@@ -104,7 +104,7 @@ const createQuiz = async (req, res) => {
     res.status(200);
     return res.json({ quizID, questionsIDs });
   } catch (err) {
-    res.status(501);
+    res.status(500);
     return res.json({ error: err });
   }
 };
@@ -119,7 +119,7 @@ const updateQuizName = async (req, res) => {
     res.status(200);
     res.json({});
   } catch (err) {
-    res.status(501);
+    res.status(500);
     res.json({ error: err });
   }
 };
@@ -144,7 +144,7 @@ const deleteQuizByID = async (req, res) => {
 
     return res.status(200);
   } catch (err) {
-    res.status(501);
+    res.status(500);
     res.json(err);
   }
 };
