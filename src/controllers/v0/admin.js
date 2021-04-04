@@ -7,7 +7,7 @@ const getAPICounts = async (req, res) => {
     res.status(200);
     res.json({ apiCounts });
   } catch (err) {
-    res.status(501);
+    res.status(500);
     res.json({ err });
   }
 };
