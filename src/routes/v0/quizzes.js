@@ -17,7 +17,7 @@ router.get(
   getQuizByID
 );
 
-router.put('/:quizID', incrementAPI('PUT /api/v0/quizzes/:quizID'), createQuiz);
+router.post('/', incrementAPI('PUT /api/v0/quizzes/:quizID'), createQuiz);
 
 router.delete(
   '/:quizID',
