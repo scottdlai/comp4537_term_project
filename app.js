@@ -19,7 +19,7 @@ app.use(logger('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: 'https://scottdlai.github.io/term_project_client/#/' }));
 
 app.use('/api/v0/quizzes', quizzesRouter);
 app.use('/api/v0/questions', questionsRouter);
