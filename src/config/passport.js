@@ -36,7 +36,7 @@ passport.use(
     {
       ignoreExpiration: true,
       secretOrKey: JWT_TOKEN,
-      jwtFromRequest: ExtractJwt.fromBodyField('token'),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('token'),
     },
     async ({ user: { username } }, done) => {
       try {
