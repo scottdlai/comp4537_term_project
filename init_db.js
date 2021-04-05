@@ -68,12 +68,22 @@ const createAdmin = async () => {
   console.log('Successfully init `admin` table with values');
 };
 
+const createUsers = async () => {
+  await db.schema.createTable('users', (table) => {
+    table.string('username').primary();
+    table.string('password').notNullable();
+  });
+
+  console.log('Successfully created `users` table');
+};
+
 const main = async () => {
   await createQuizzes();
   await createQuestions();
   await createOptions();
   await createSubmissions();
   await createAdmin();
+  await createUsers();
 };
 
 main();

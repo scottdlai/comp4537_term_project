@@ -1,79 +1,67 @@
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 const jwt = require('jwt-simple');
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
-const { JWT_TOKEN } = require('../config');
-
-/*
-passport.use(new LocalStrategy({
-  session: false,
-  usernameField: 'email',
-  passwordField: 'password',
- }, (email, password, done) => {
-  User.find({ where: { email } })
-    .then((user) => {
-      if (!user) { return done(null, false); }
-      console.log("USER FOUND NAME!", user.name)
-      console.log("User is password: ", user.isValidPassword('123456'));
-      return user;
-    //return Promise.all([user, user.isValidPassword(password)]);
-    })
-    .then(([user, isValid]) => {
-      if (!isValid) { return done(null, false); }
-      return done(null, user);
-    })
-    .catch(done);
-}));
-*/
+const { JWT_TOKEN, db } = require('../config');
 
 passport.use(
   new LocalStrategy(
     {
       session: false,
-      usernameField: 'email',
+      usernameField: 'username',
       passwordField: 'password',
     },
-    (email, password, done) => {
-      User.findOne({ where: { email } })
+    (username, password, done) => {
+      // check to see if the username exists
+      db('users')
+        .where({ username })
+        .first()
         .then((user) => {
-          if (!user) {
+          if (!user) return done(null, false);
+          if (!bcrypt.compareSync(password, user.password)) {
             return done(null, false);
+          } else {
+            return done(null, user);
           }
-          return Promise.all([user, user.isValidPassword(password)]);
         })
-        .then(([user, isValid]) => {
-          if (!isValid) {
-            return done(null, false);
-          }
-          return done(null, user);
-        })
-        .catch(done);
+        .catch((err) => {
+          return done(err);
+        });
     }
   )
 );
 
 passport.use(
-  new BearerStrategy({ session: false }, (token, done) => {
+  new BearerStrategy({ session: false }, async (token, done) => {
     const decodedToken = jwt.decode(token, JWT_TOKEN);
-    const userId = decodedToken && decodedToken.id;
+    const username = decodedToken && decodedToken.username;
     const expires = decodedToken && new Date(decodedToken.expirationDate);
 
     if (expires > Date.now()) {
-      return User.findById(userId)
-        .then((user) => done(null, user))
-        .catch(done);
+      try {
+        const user = await db('users').where({ username }).first();
+
+        return done(null, user);
+      } catch (err) {
+        done(err);
+      }
     }
     return done(null, false);
   })
 );
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser(({ username }, done) => done(null, username));
 
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => done(null, user))
-    .catch(done);
+passport.deserializeUser(async (username, done) => {
+  try {
+    const user = await db('users').where({ username }).first();
+
+    return done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
-module.exports = { JWT_TOKEN };
+module.exports = passport;
