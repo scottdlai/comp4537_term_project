@@ -1,10 +1,8 @@
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const jwt = require('jwt-simple');
 const LocalStrategy = require('passport-local').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
-
-const { JWT_TOKEN, db } = require('../config');
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+const { db, JWT_TOKEN } = require('./index');
 
 passport.use(
   new LocalStrategy(
@@ -34,22 +32,28 @@ passport.use(
 );
 
 passport.use(
-  new BearerStrategy({ session: false }, async (token, done) => {
-    const decodedToken = jwt.decode(token, JWT_TOKEN);
-    const username = decodedToken && decodedToken.username;
-    const expires = decodedToken && new Date(decodedToken.expirationDate);
-
-    if (expires > Date.now()) {
+  new JwtStrategy(
+    {
+      ignoreExpiration: true,
+      secretOrKey: JWT_TOKEN,
+      jwtFromRequest: ExtractJwt.fromBodyField('token'),
+    },
+    async ({ user: { username } }, done) => {
       try {
-        const user = await db('users').where({ username }).first();
+        const user = await db('users')
+          .where({ username })
+          .first(['username', 'isAdmin']);
 
-        return done(null, user);
+        if (!user) {
+          return done(null, false);
+        }
+
+        done(null, user);
       } catch (err) {
-        done(err);
+        done({ error: err });
       }
     }
-    return done(null, false);
-  })
+  )
 );
 
 passport.serializeUser(({ username }, done) => done(null, username));
