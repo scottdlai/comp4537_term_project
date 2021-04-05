@@ -33,7 +33,7 @@ const anyUser = async (req, res, next) => {
         next();
       }
     }
-  );
+  )(req, res, next);
 };
 
 module.exports = { adminOnly, anyUser };
