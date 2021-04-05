@@ -30,6 +30,7 @@ const anyUser = async (req, res, next) => {
         res.status(401);
         res.json({ error: 'Wrong token' });
       } else {
+        res.locals = { username };
         next();
       }
     }
