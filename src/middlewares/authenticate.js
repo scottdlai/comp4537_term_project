@@ -5,14 +5,35 @@ const adminOnly = async (req, res, next) => {
     'jwt',
     { session: false },
     (err, { isAdmin, username }, info) => {
-      if (!isAdmin || err) {
+      if (!isAdmin) {
         res.status(401);
-        res.json({ error: 'Unauthorized (user is not an admin)', username });
-      } else {
-        next();
+        return res.json({
+          error: 'Unauthorized (user is not an admin)',
+          username,
+        });
+      } else if (err) {
+        res.status(401);
+        return res.json({ error: 'Wrong token' });
       }
+
+      next();
     }
   )(req, res, next);
 };
 
-module.exports = { adminOnly };
+const anyUser = async (req, res, next) => {
+  passport.authenticate(
+    'jwt',
+    { session: false },
+    (err, { username }, info) => {
+      if (err || !username) {
+        res.status(401);
+        res.json({ error: 'Wrong token' });
+      } else {
+        next();
+      }
+    }
+  );
+};
+
+module.exports = { adminOnly, anyUser };
