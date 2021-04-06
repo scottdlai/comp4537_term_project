@@ -39,7 +39,7 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('token'),
     },
     async ({ user: { username }, iat }, done) => {
-      if (iat + TOKEN_EXPIRATION_TIME < Date.now()) {
+      if (iat + TOKEN_EXPIRATION_TIME > Date.now()) {
         return done(null, { error: 'Token Expired' });
       }
 
