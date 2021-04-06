@@ -5,15 +5,17 @@ const adminOnly = async (req, res, next) => {
     'jwt',
     { session: false },
     (error, { isAdmin, username }, info) => {
+      if (error) {
+        res.status(401);
+        return res.json({ error });
+      }
+
       if (!isAdmin) {
         res.status(401);
         return res.json({
           error: 'Unauthorized (user is not an admin)',
           username,
         });
-      } else if (error) {
-        res.status(401);
-        return res.json({ error });
       }
 
       next();
