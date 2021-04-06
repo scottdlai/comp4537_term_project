@@ -40,7 +40,7 @@ passport.use(
     },
     async ({ user: { username }, iat }, done) => {
       if (iat + TOKEN_EXPIRATION_TIME > Date.now()) {
-        return done(null, { error: 'Token Expired' });
+        return done({ error: 'Token Expired' });
       }
 
       try {
@@ -49,12 +49,12 @@ passport.use(
           .first(['username', 'isAdmin']);
 
         if (!user) {
-          return done(null, false);
+          return done({ error: 'No user found' });
         }
 
         done(null, user);
-      } catch (err) {
-        done({ error: err });
+      } catch (error) {
+        done({ error });
       }
     }
   )
