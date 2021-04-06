@@ -11,7 +11,7 @@ const adminOnly = async (req, res, next) => {
           error: 'Unauthorized (user is not an admin)',
           username,
         });
-      } else if (err) {
+      } else if (error) {
         res.status(401);
         return res.json({ error });
       }
