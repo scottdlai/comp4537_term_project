@@ -10,7 +10,7 @@ const login = (req, res) =>
       return res.json({ err });
     }
 
-    const token = jwt.sign({ user }, JWT_TOKEN);
+    const token = jwt.sign({ user, iat: Date.now() }, JWT_TOKEN);
 
     res.status(200);
     res.json({ token });

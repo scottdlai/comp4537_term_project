@@ -2,7 +2,7 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const LocalStrategy = require('passport-local').Strategy;
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const { db, JWT_TOKEN } = require('./index');
+const { db, JWT_TOKEN, TOKEN_EXPIRATION_TIME } = require('./index');
 
 passport.use(
   new LocalStrategy(
@@ -38,7 +38,11 @@ passport.use(
       secretOrKey: JWT_TOKEN,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('token'),
     },
-    async ({ user: { username } }, done) => {
+    async ({ user: { username }, iat }, done) => {
+      if (iat + TOKEN_EXPIRATION_TIME < Date.now()) {
+        return done(null, { error: 'Token Expired' });
+      }
+
       try {
         const user = await db('users')
           .where({ username })
