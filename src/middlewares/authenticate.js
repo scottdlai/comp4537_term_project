@@ -4,7 +4,7 @@ const adminOnly = async (req, res, next) => {
   passport.authenticate(
     'jwt',
     { session: false },
-    (err, { isAdmin, username }, info) => {
+    (error, { isAdmin, username }, info) => {
       if (!isAdmin) {
         res.status(401);
         return res.json({
@@ -13,7 +13,7 @@ const adminOnly = async (req, res, next) => {
         });
       } else if (err) {
         res.status(401);
-        return res.json({ error: 'Wrong token' });
+        return res.json({ error });
       }
 
       next();
@@ -25,10 +25,10 @@ const anyUser = async (req, res, next) => {
   passport.authenticate(
     'jwt',
     { session: false },
-    (err, { username }, info) => {
+    (error, { username }, info) => {
       if (err || !username) {
         res.status(401);
-        res.json({ error: 'Wrong token' });
+        res.json({ error });
       } else {
         res.locals = { username };
         next();
