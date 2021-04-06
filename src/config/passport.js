@@ -19,13 +19,13 @@ passport.use(
         .then((user) => {
           if (!user) return done(null, false);
           if (!bcrypt.compareSync(password, user.password)) {
-            return done(null, false);
+            return done({ error: 'Wrong password' }, false);
           } else {
             return done(null, user);
           }
         })
-        .catch((err) => {
-          return done(err);
+        .catch((error) => {
+          return done(error, false);
         });
     }
   )
@@ -39,8 +39,8 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken('token'),
     },
     async ({ user: { username }, iat }, done) => {
-      if (iat + TOKEN_EXPIRATION_TIME > Date.now()) {
-        return done({ error: 'Token Expired' });
+      if (iat + TOKEN_EXPIRATION_TIME < Date.now()) {
+        return done({ error: 'Token Expired' }, false);
       }
 
       try {
@@ -49,12 +49,12 @@ passport.use(
           .first(['username', 'isAdmin']);
 
         if (!user) {
-          return done({ error: 'No user found' });
+          return done({ error: 'No user found' }, false);
         }
 
         done(null, user);
       } catch (error) {
-        done({ error });
+        done(error, false);
       }
     }
   )
@@ -68,6 +68,7 @@ passport.deserializeUser(async (username, done) => {
 
     return done(null, user);
   } catch (err) {
+    console.log(err);
     done(err);
   }
 });

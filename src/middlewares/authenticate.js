@@ -28,7 +28,7 @@ const anyUser = async (req, res, next) => {
     'jwt',
     { session: false },
     (error, { username }, info) => {
-      if (err || !username) {
+      if (error || !username) {
         res.status(401);
         res.json({ error });
       } else {

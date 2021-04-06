@@ -7,7 +7,7 @@ const login = (req, res) =>
   passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err || !user) {
       res.status(401);
-      return res.json({ err });
+      return res.json(err);
     }
 
     const token = jwt.sign({ user, iat: Date.now() }, JWT_TOKEN);
@@ -27,7 +27,7 @@ const register = async (req, res) => {
       'isAdmin',
     ]);
 
-    const token = jwt.sign({ user }, JWT_TOKEN);
+    const token = jwt.sign({ user, iat: Date.now() }, JWT_TOKEN);
 
     res.status(200);
     res.json({ token });
