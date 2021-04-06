@@ -19,7 +19,7 @@ passport.use(
         .then((user) => {
           if (!user) return done(null, false);
           if (!bcrypt.compareSync(password, user.password)) {
-            return done({ error: 'Wrong password' }, false);
+            return done(null, false, { error: 'Wrong password' });
           } else {
             return done(null, user);
           }
@@ -40,7 +40,7 @@ passport.use(
     },
     async ({ user: { username }, iat }, done) => {
       if (iat + TOKEN_EXPIRATION_TIME < Date.now()) {
-        return done({ error: 'Token Expired' }, false);
+        return done(null, false, { error: 'Token Expired' });
       }
 
       try {
@@ -49,7 +49,7 @@ passport.use(
           .first(['username', 'isAdmin']);
 
         if (!user) {
-          return done({ error: 'No user found' }, false);
+          return done(null, false, { error: 'Invalid token' });
         }
 
         done(null, user);
@@ -66,7 +66,11 @@ passport.deserializeUser(async (username, done) => {
   try {
     const user = await db('users').where({ username }).first();
 
-    return done(null, user);
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false, { error: "Can't find user" });
+    }
   } catch (err) {
     console.log(err);
     done(err);

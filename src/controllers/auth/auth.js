@@ -5,9 +5,14 @@ const { JWT_TOKEN, db } = require('../../config');
 
 const login = (req, res) =>
   passport.authenticate('local', { session: false }, (err, user, info) => {
-    if (err || !user) {
-      res.status(401);
+    if (err) {
+      res.status(500);
       return res.json(err);
+    }
+
+    if (!user) {
+      res.status(400);
+      return res.json(info);
     }
 
     const token = jwt.sign({ user, iat: Date.now() }, JWT_TOKEN);

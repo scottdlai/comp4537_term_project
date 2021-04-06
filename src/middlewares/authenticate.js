@@ -1,42 +1,46 @@
 const passport = require('passport');
 
 const adminOnly = async (req, res, next) => {
-  passport.authenticate(
-    'jwt',
-    { session: false },
-    (error, { isAdmin, username }, info) => {
-      if (error) {
-        res.status(401);
-        return res.json({ error });
-      }
-
-      if (!isAdmin) {
-        res.status(401);
-        return res.json({
-          error: 'Unauthorized (user is not an admin)',
-          username,
-        });
-      }
-
-      next();
+  passport.authenticate('jwt', { session: false }, (error, user, info) => {
+    if (error) {
+      res.status(500);
+      return res.json({ error });
     }
-  )(req, res, next);
+
+    if (!user) {
+      res.status(401);
+      return res.json(info);
+    }
+
+    const { username, isAdmin } = user;
+
+    if (!isAdmin) {
+      res.status(401);
+      return res.json({
+        error: 'Unauthorized (user is not an admin)',
+        username,
+      });
+    }
+
+    next();
+  })(req, res, next);
 };
 
 const anyUser = async (req, res, next) => {
-  passport.authenticate(
-    'jwt',
-    { session: false },
-    (error, { username }, info) => {
-      if (error || !username) {
-        res.status(401);
-        res.json({ error });
-      } else {
-        res.locals = { username };
-        next();
-      }
+  passport.authenticate('jwt', { session: false }, (error, user, info) => {
+    if (error) {
+      res.status(500);
+      res.json({ error });
     }
-  )(req, res, next);
+
+    if (!user) {
+      res.status(401);
+      return res.json(info);
+    }
+    const { username } = user;
+    res.locals = { username };
+    next();
+  })(req, res, next);
 };
 
 module.exports = { adminOnly, anyUser };
