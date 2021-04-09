@@ -20,9 +20,14 @@ const getRecentQuizzes = async (req, res) => {
 
 const getQuizByID = async (req, res) => {
   const { quizID } = req.params;
+  const { showAnswers } = req.query;
+
+  const columnsToShow = !!showAnswers
+    ? [...columns, 'choices.isCorrect']
+    : [...columns];
 
   const rows = await db('quizzes')
-    .select(...columns)
+    .select(columnsToShow)
     .join('questions', 'quizzes.id', '=', 'questions.quizID')
     .join('choices', 'questions.id', '=', 'choices.questionID')
     .where({ quizID });
@@ -32,29 +37,43 @@ const getQuizByID = async (req, res) => {
     return res.json({ error: "Quiz doesn't exist" });
   }
 
-  const [{ quizName }] = rows;
+  const [{ quizName, createdAt }] = rows;
 
   const questions = Object.values(
-    rows.reduce((acc, { questionID, questionBody, choiceID, choiceBody }) => {
-      const question = { questionID, questionBody };
-      const choice = { choiceID, choiceBody };
+    rows.reduce(
+      (
+        acc,
+        {
+          questionID,
+          questionBody,
+          choiceID,
+          choiceBody,
+          createdAt,
+          quizName,
+          ...rest
+        }
+      ) => {
+        const question = { questionID, questionBody };
+        const choice = { ...rest, choiceID, choiceBody };
 
-      return questionID in acc
-        ? {
-            ...acc,
-            [questionID]: {
-              ...question,
-              choices: [...acc[questionID].choices, choice],
-            },
-          }
-        : { ...acc, [questionID]: { ...question, choices: [choice] } };
-    }, {})
+        return questionID in acc
+          ? {
+              ...acc,
+              [questionID]: {
+                ...question,
+                choices: [...acc[questionID].choices, choice],
+              },
+            }
+          : { ...acc, [questionID]: { ...question, choices: [choice] } };
+      },
+      {}
+    )
   );
 
   console.log(questions);
 
   res.status(200);
-  res.json({ quizID, quizName, questions });
+  res.json({ quizID, quizName, createdAt, questions });
 };
 
 const createQuiz = async (req, res) => {

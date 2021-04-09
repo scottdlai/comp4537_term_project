@@ -1,4 +1,3 @@
-const { errors } = require('compose-middleware');
 const { db } = require('../../config');
 
 const getSubmissionsByID = async (req, res) => {
