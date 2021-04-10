@@ -6,10 +6,16 @@ const createQuestionFor = async (req, res) => {
   const { questionBody, choices } = req.body;
 
   try {
-    const questionID = await db('questions').insert(
+    const questionIDRow = await db('questions').insert(
       { quizID, body: questionBody },
       'id'
     );
+
+    if (questionIDRow.length !== 1) {
+      throw new Error('Internal server error');
+    }
+
+    const [questionID] = questionIDRow;
 
     const choicesIDs = await Promise.all(
       choices.map(({ body, isCorrect }) => {
@@ -18,8 +24,9 @@ const createQuestionFor = async (req, res) => {
     );
 
     res.status(201);
-    res.json({ questionID, choices: choicesIDs });
+    res.json({ questionID, choices: choicesIDs.flat() });
   } catch (error) {
+    console.log(error);
     res.status(500);
     res.json({ error });
   }
