@@ -11,9 +11,10 @@ const createQuestionFor = async (req, res) => {
       'id'
     );
 
-    const choicesIDs = await db('choices').insert(
-      choices.map((choice) => ({ ...choice, questionID })),
-      'id'
+    const choicesIDs = await Promise.all(
+      choices.map(({ body, isCorrect }) => {
+        return db('choices').insert({ body, isCorrect, questionID }, 'id');
+      })
     );
 
     res.status(201);
