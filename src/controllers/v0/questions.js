@@ -29,10 +29,16 @@ const updateQuestionByID = async (req, res) => {
 
   const { body, choices } = req.body;
 
+  console.log(choices);
+
   try {
     await db('questions').update({ body }).where({ id: questionID });
 
-    await db('choices').update(choices).where({ questionID });
+    await Promise.all(
+      choices.map(async ({ choiceID: id, choiceBody: body, isCorrect }) => {
+        return db('choices').update({ body, isCorrect }).where({ id });
+      })
+    );
 
     res.status(204);
     res.end();
