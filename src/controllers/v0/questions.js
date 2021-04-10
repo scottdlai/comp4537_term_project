@@ -62,6 +62,8 @@ const deleteQuestionByID = async (req, res) => {
   try {
     await db('choices').delete().where({ questionID });
 
+    await db('questions').delete().where({ id: questionID });
+
     res.status(204);
     res.end();
   } catch (error) {
