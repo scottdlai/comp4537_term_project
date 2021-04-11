@@ -29,8 +29,8 @@ const getQuizByID = async (req, res) => {
   const rows = await db('quizzes')
     .select(columnsToShow)
     .leftJoin('questions', 'quizzes.id', '=', 'questions.quizID')
-    .join('choices', 'questions.id', '=', 'choices.questionID')
-    .where({ quizID });
+    .leftJoin('choices', 'questions.id', '=', 'choices.questionID')
+    .where({ 'quizzes.id': quizID });
 
   if (rows.length === 0) {
     res.status(400);
@@ -71,6 +71,11 @@ const getQuizByID = async (req, res) => {
   );
 
   console.log(questions);
+
+  if (questions[0].questionID === null) {
+    res.status(200);
+    return res.json({ quizID, quizName, createAt, questions: [] });
+  }
 
   res.status(200);
   res.json({ quizID, quizName, createdAt, questions });
