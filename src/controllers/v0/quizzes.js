@@ -166,7 +166,7 @@ const deleteQuizByID = async (req, res) => {
 
     await db('quizzes').delete().where({ id: quizID });
 
-    return res.status(200);
+    return res.status(200).end();
   } catch (err) {
     res.status(500);
     res.json(err);
