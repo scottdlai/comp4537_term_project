@@ -28,7 +28,7 @@ const getQuizByID = async (req, res) => {
 
   const rows = await db('quizzes')
     .select(columnsToShow)
-    .join('questions', 'quizzes.id', '=', 'questions.quizID')
+    .leftJoin('questions', 'quizzes.id', '=', 'questions.quizID')
     .join('choices', 'questions.id', '=', 'choices.questionID')
     .where({ quizID });
 
