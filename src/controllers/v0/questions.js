@@ -44,6 +44,11 @@ const updateQuestionByID = async (req, res) => {
 
   console.log(choices);
 
+  if (!choices.some(({ isCorrect }) => isCorrect)) {
+    res.status(400);
+    return res.json({ error: 'There must be at least 1 correct choice' });
+  }
+
   try {
     await db('questions').update({ body }).where({ id: questionID });
 
