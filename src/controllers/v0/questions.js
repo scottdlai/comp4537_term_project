@@ -5,6 +5,11 @@ const createQuestionFor = async (req, res) => {
 
   const { questionBody, choices } = req.body;
 
+  if (!choices.some(({ isCorrect }) => isCorrect)) {
+    res.status(400);
+    return res.json({ error: 'There must be at least 1 correct choice' });
+  }
+
   try {
     const questionIDRow = await db('questions').insert(
       { quizID, body: questionBody },
